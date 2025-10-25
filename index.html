@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loto Estelar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(to bottom, #1a1a2e, #16213e);
+            color: #e0e7ff;
+            font-family: 'Arial', sans-serif;
+            min-height: 100vh;
+        }
+        .starry-bg {
+            background-image: url('data:image/svg+xml,%3Csvg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"%3E%3Ccircle cx="2" cy="2" r="1" fill="%23ffffff" opacity="0.3"/%3E%3Ccircle cx="18" cy="18" r="1" fill="%23ffffff" opacity="0.3"/%3E%3Ccircle cx="10" cy="10" r="1" fill="%23ffffff" opacity="0.2"/%3E%3C/svg%3E');
+        }
+    </style>
+</head>
+<body class="starry-bg flex items-center justify-center">
+    <div id="game-container" class="max-w-2xl w-full mx-4 p-6 bg-gray-900 bg-opacity-80 rounded-lg shadow-xl">
+        <h1 class="text-4xl font-bold text-center text-indigo-300 mb-6">🌟 Loto Estelar: La Apuesta Cósmica 🌟</h1>
+        <div id="menu" class="text-center">
+            <p class="text-lg mb-4">¡Bienvenido a Loto Estelar!</p>
+            <button onclick="startGame()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded m-2">🎮 Jugar</button>
+            <button onclick="showHelp()" class="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded m-2">❓ Ayuda y Reglas</button>
+            <button onclick="exitGame()" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded m-2">🚪 Salir</button>
+        </div>
+
+        <div id="game" class="hidden">
+            <h2 class="text-2xl font-semibold text-center mb-4">🎮 Loto Estelar</h2>
+            <div id="bet-input" class="mb-4">
+                <p class="text-lg mb-2">Selecciona 4 números del 1 al 30 y 1 planeta</p>
+                <p>Planetas disponibles: Mercurio, Venus, Tierra, Marte, Júpiter</p>
+                <div class="grid grid-cols-2 gap-4 my-4">
+                    <input id="num1" type="number" min="1" max="30" placeholder="Número 1" class="p-2 rounded bg-gray-800 text-white border border-indigo-500">
+                    <input id="num2" type="number" min="1" max="30" placeholder="Número 2" class="p-2 rounded bg-gray-800 text-white border border-indigo-500">
+                    <input id="num3" type="number" min="1" max="30" placeholder="Número 3" class="p-2 rounded bg-gray-800 text-white border border-indigo-500">
+                    <input id="num4" type="number" min="1" max="30" placeholder="Número 4" class="p-2 rounded bg-gray-800 text-white border border-indigo-500">
+                </div>
+                <input id="planet" type="text" placeholder="Planeta" class="w-full p-2 rounded bg-gray-800 text-white border border-indigo-500 mb-4">
+                <button onclick="submitBet()" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded">✅ Enviar Apuesta</button>
+            </div>
+
+            <div id="reveal-phase" class="hidden">
+                <p id="initial-bet" class="mb-4"></p>
+                <button id="reveal-numbers-btn" onclick="revealNumbers()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded mb-4 disabled:bg-gray-500 disabled:cursor-not-allowed">🔍 Revelar Números</button>
+                <div id="numbers-reveal" class="hidden">
+                    <p id="non-winning-numbers"></p>
+                    <p id="remaining-numbers"></p>
+                    <button id="reveal-planets-btn" onclick="revealPlanets()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded mb-4 disabled:bg-gray-500 disabled:cursor-not-allowed">🪐 Revelar Planetas</button>
+                </div>
+                <div id="planets-reveal" class="hidden">
+                    <p id="non-winning-planets"></p>
+                    <p id="remaining-planet"></p>
+                    <p class="text-lg font-semibold mt-4">⚡ Opciones Disponibles:</p>
+                    <div id="options" class="space-y-2"></div>
+                </div>
+            </div>
+
+            <div id="results" class="hidden">
+                <h3 class="text-xl font-semibold mb-2">🎲 Resultados Finales</h3>
+                <p id="winning-numbers"></p>
+                <p id="winning-planet"></p>
+                <p id="hits"></p>
+                <p id="prize" class="text-lg font-bold"></p>
+                <button onclick="backToMenu()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded mt-4">🔙 Volver al Menú</button>
+            </div>
+        </div>
+
+        <div id="help" class="hidden">
+            <h2 class="text-2xl font-semibold text-center mb-4">❓ Loto Estelar - Reglas y Ayuda</h2>
+            <p class="mb-2">🎯 <strong>Objetivo:</strong> Acertar 4 números (1-30) y 1 planeta.</p>
+            <p class="mb-2">🪐 <strong>Planetas:</strong> Mercurio, Venus, Tierra, Marte, Júpiter</p>
+            <p class="mb-2">🏆 <strong>Premios:</strong></p>
+            <ul class="list-disc list-inside mb-4">
+                <li>Premio Mayor (4 números + planeta)</li>
+                <li>Premio Secundario 2 (4 números)</li>
+                <li>Premio Secundario 1 (3 números + planeta)</li>
+                <li>Premio Secundario 3 (2 números + planeta)</li>
+            </ul>
+            <button onclick="backToMenu()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded">🔙 Volver al Menú</button>
+        </div>
+    </div>
+
+    <script>
+        const loto = {
+            numeros_disponibles: Array.from({length: 30}, (_, i) => i + 1),
+            planetas: ['Mercurio', 'Venus', 'Tierra', 'Marte', 'Júpiter'],
+            premios: {
+                '4_numeros_planeta': 'Premio Mayor (4 números + planeta)',
+                '4_numeros': 'Premio Secundario 2 (4 números)',
+                '3_numeros_planeta': 'Premio Secundario 1 (3 números + planeta)',
+                '2_numeros_planeta': 'Premio Secundario 3 (2 números + planeta)'
+            },
+            numeros_ganadores: [],
+            planeta_ganador: '',
+            numeros_jugador: [],
+            planeta_jugador: '',
+            numeros_restantes: [],
+            planeta_restante: ''
+        };
+
+        function randomSample(arr, n) {
+            let result = [];
+            let copy = [...arr];
+            for (let i = 0; i < n; i++) {
+                const idx = Math.floor(Math.random() * copy.length);
+                result.push(copy.splice(idx, 1)[0]);
+            }
+            return result;
+        }
+
+        function normalizePlanetInput(input) {
+            input = input.trim().toLowerCase().replace('jupiter', 'júpiter');
+            return input.charAt(0).toUpperCase() + input.slice(1);
+        }
+
+        function startGame() {
+            document.getElementById('menu').classList.add('hidden');
+            document.getElementById('game').classList.remove('hidden');
+            document.getElementById('bet-input').classList.remove('hidden');
+            document.getElementById('reveal-phase').classList.add('hidden');
+            document.getElementById('results').classList.add('hidden');
+            document.getElementById('reveal-numbers-btn').disabled = false;
+            document.getElementById('reveal-planets-btn').disabled = false;
+            loto.numeros_ganadores = randomSample(loto.numeros_disponibles, 4).sort((a, b) => a - b);
+            loto.planeta_ganador = randomSample(loto.planetas, 1)[0];
+        }
+
+        function showHelp() {
+            document.getElementById('menu').classList.add('hidden');
+            document.getElementById('help').classList.remove('hidden');
+        }
+
+        function exitGame() {
+            alert('🚀 ¡Gracias por jugar Loto Estelar! ✨');
+            document.getElementById('menu').classList.remove('hidden');
+            document.getElementById('game').classList.add('hidden');
+            document.getElementById('help').classList.add('hidden');
+        }
+
+        function submitBet() {
+            const nums = [
+                parseInt(document.getElementById('num1').value),
+                parseInt(document.getElementById('num2').value),
+                parseInt(document.getElementById('num3').value),
+                parseInt(document.getElementById('num4').value)
+            ];
+            const planetInput = document.getElementById('planet').value;
+            const planet = normalizePlanetInput(planetInput);
+
+            if (nums.some(n => isNaN(n) || n < 1 || n > 30)) {
+                alert('❌ Los números deben estar entre 1 y 30.');
+                return;
+            }
+            if (new Set(nums).size !== 4) {
+                alert('❌ No puedes repetir números.');
+                return;
+            }
+            if (!loto.planetas.some(p => p.toLowerCase() === planet.toLowerCase())) {
+                alert('❌ Planeta no válido. Elige: Mercurio, Venus, Tierra, Marte, Júpiter.');
+                return;
+            }
+
+            loto.numeros_jugador = nums.sort((a, b) => a - b);
+            loto.planeta_jugador = loto.planetas.find(p => p.toLowerCase() === planet.toLowerCase());
+            document.getElementById('initial-bet').innerText = `💫 Tu apuesta inicial: ${loto.numeros_jugador.join(', ')} + ${loto.planeta_jugador}`;
+            document.getElementById('bet-input').classList.add('hidden');
+            document.getElementById('reveal-phase').classList.remove('hidden');
+        }
+
+        function revealNumbers() {
+            const numeros_no_revelados = loto.numeros_disponibles.filter(
+                num => !loto.numeros_ganadores.includes(num) && !loto.numeros_jugador.includes(num)
+            );
+            const numeros_a_revelar = randomSample(numeros_no_revelados, 22);
+            loto.numeros_restantes = loto.numeros_disponibles.filter(
+                num => !numeros_a_revelar.includes(num) && !loto.numeros_jugador.includes(num)
+            ).sort((a, b) => a - b);
+
+            document.getElementById('non-winning-numbers').innerText = `📢 Números que NO están en la combinación ganadora:\n${numeros_a_revelar.sort((a, b) => a - b).join(', ')}`;
+            document.getElementById('remaining-numbers').innerText = `💡 Quedan ${loto.numeros_restantes.length} números sin revelar: ${loto.numeros_restantes.join(', ')}`;
+            document.getElementById('numbers-reveal').classList.remove('hidden');
+            document.getElementById('reveal-numbers-btn').disabled = true;
+        }
+
+        function revealPlanets() {
+            const planetas_incorrectos = loto.planetas.filter(
+                p => p !== loto.planeta_ganador && p !== loto.planeta_jugador
+            );
+            const planetas_a_revelar = randomSample(planetas_incorrectos, 3);
+            loto.planeta_restante = loto.planetas.find(
+                p => !planetas_a_revelar.includes(p) && p !== loto.planeta_jugador
+            );
+
+            document.getElementById('non-winning-planets').innerText = `🪐 Planetas que NO son el ganador:\n${planetas_a_revelar.join(', ')}`;
+            document.getElementById('remaining-planet').innerText = `💡 Planeta restante sin revelar: ${loto.planeta_restante}`;
+            document.getElementById('planets-reveal').classList.remove('hidden');
+            document.getElementById('reveal-planets-btn').disabled = true;
+
+            const options = [
+                `📋 Mantener apuesta: ${loto.numeros_jugador.join(', ')} + ${loto.planeta_jugador}`,
+                `🔄 Cambiar números: ${loto.numeros_restantes.join(', ')} + ${loto.planeta_jugador}`,
+                `🪐 Cambiar planeta: ${loto.numeros_jugador.join(', ')} + ${loto.planeta_restante}`,
+                `🎯 Cambiar ambos: ${loto.numeros_restantes.join(', ')} + ${loto.planeta_restante}`
+            ];
+
+            const optionsDiv = document.getElementById('options');
+            optionsDiv.innerHTML = '';
+            options.forEach((opt, idx) => {
+                const button = document.createElement('button');
+                button.className = 'bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded w-full text-left';
+                button.innerText = `${idx + 1}. ${opt}`;
+                button.onclick = () => chooseOption(idx + 1);
+                optionsDiv.appendChild(button);
+            });
+        }
+
+        function chooseOption(option) {
+            let apuesta_final_num, apuesta_final_planeta;
+            switch (option) {
+                case 1:
+                    apuesta_final_num = loto.numeros_jugador;
+                    apuesta_final_planeta = loto.planeta_jugador;
+                    break;
+                case 2:
+                    apuesta_final_num = loto.numeros_restantes;
+                    apuesta_final_planeta = loto.planeta_jugador;
+                    break;
+                case 3:
+                    apuesta_final_num = loto.numeros_jugador;
+                    apuesta_final_planeta = loto.planeta_restante;
+                    break;
+                case 4:
+                    apuesta_final_num = loto.numeros_restantes;
+                    apuesta_final_planeta = loto.planeta_restante;
+                    break;
+            }
+
+            const numeros_acertados = apuesta_final_num.filter(n => loto.numeros_ganadores.includes(n)).length;
+            const planeta_acertado = apuesta_final_planeta === loto.planeta_ganador;
+
+            let tipo_premio = null;
+            if (numeros_acertados === 4 && planeta_acertado) tipo_premio = '4_numeros_planeta';
+            else if (numeros_acertados === 4) tipo_premio = '4_numeros';
+            else if (numeros_acertados === 3 && planeta_acertado) tipo_premio = '3_numeros_planeta';
+            else if (numeros_acertados === 2 && planeta_acertado) tipo_premio = '2_numeros_planeta';
+
+            document.getElementById('reveal-phase').classList.add('hidden');
+            document.getElementById('results').classList.remove('hidden');
+            document.getElementById('winning-numbers').innerText = `Números ganadores: ${loto.numeros_ganadores.join(', ')}`;
+            document.getElementById('winning-planet').innerText = `Planeta ganador: ${loto.planeta_ganador}`;
+            document.getElementById('hits').innerText = `📊 TUS ACIERTOS:\n- Números acertados: ${numeros_acertados} de 4\n- Planeta acertado: ${planeta_acertado ? 'Sí ✅' : 'No ❌'}`;
+            document.getElementById('prize').innerText = tipo_premio ? `🎉 ¡FELICIDADES! 🎉\n🏆 Has ganado: ${loto.premios[tipo_premio]}` : '😔 Lo siento, no has ganado esta vez.';
+        }
+
+        function backToMenu() {
+            loto.numeros_ganadores = [];
+            loto.planeta_ganador = '';
+            loto.numeros_jugador = [];
+            loto.planeta_jugador = '';
+            loto.numeros_restantes = [];
+            loto.planeta_restante = '';
+
+            document.getElementById('game').classList.add('hidden');
+            document.getElementById('help').classList.add('hidden');
+            document.getElementById('menu').classList.remove('hidden');
+            document.getElementById('num1').value = '';
+            document.getElementById('num2').value = '';
+            document.getElementById('num3').value = '';
+            document.getElementById('num4').value = '';
+            document.getElementById('planet').value = '';
+            document.getElementById('initial-bet').innerText = '';
+            document.getElementById('non-winning-numbers').innerText = '';
+            document.getElementById('remaining-numbers').innerText = '';
+            document.getElementById('non-winning-planets').innerText = '';
+            document.getElementById('remaining-planet').innerText = '';
+            document.getElementById('options').innerHTML = '';
+            document.getElementById('winning-numbers').innerText = '';
+            document.getElementById('winning-planet').innerText = '';
+            document.getElementById('hits').innerText = '';
+            document.getElementById('prize').innerText = '';
+            document.getElementById('numbers-reveal').classList.add('hidden');
+            document.getElementById('planets-reveal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
