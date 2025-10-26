@@ -27,7 +27,7 @@ Con estos actualizamos el sistema, luego instalamos git y Docker
 ```
 sudo apt update
 sudo apt install git -y
-sudo apt upgrade -y // Este paso no es necesario
+sudo apt upgrade -y # Este paso no es necesario
 sudo apt install docker-compose -y
 ```
 Revisamos la version que se instalo y el estado del Docker
@@ -37,7 +37,7 @@ sudo systemctl status docker
 ```
 Clonamos el repositorio
 ```
-git clone https://github.com/Lian712/juego // Lian712 es mi usuario, en otro caso se pone algun otro y el juego es el nombre del repositorio
+git clone https://github.com/Lian712/juego # Lian712 es mi usuario, en otro caso se pone algun otro y el juego es el nombre del repositorio
 cd juego
 ```
 Creamos la Imagen Docker y revisamos si se creo correctamente
@@ -51,10 +51,20 @@ sudo docker run -d -p 80:80 juego
 ```
 Revisamos en el navegador si funciona
 ```
-http://54.160.36.205 // la ip es la publica que tu tengas, en mi caso es esa
+http://54.160.36.205 # la ip es la publica que tu tengas, en mi caso es esa
 ```
+# Cómo modificar el proyecto
+Si deseas cambiar el contenido del sitio, edita el archivo "index.html" o agrega otros archivos.  
+Después, reconstruye la imagen y vuelve a ejecutar el contenedor con los siguientes comandos:
+```
+sudo docker build -t juego .
+sudo docker run -d -p 80:80 juego
+```
+
 # Conclusión
-Asi fue como se hizo este proyecto, espero te sirva y puedas incluso subir tu propio Docker con la pagina web que desees
+Así fue como se hizo este proyecto. Espero te sirva y puedas incluso subir tu propio Docker con la página web que desees.  
+Este proceso demuestra cómo desplegar un servicio web funcional usando Nginx y Docker en la nube.
+
 
 
 
