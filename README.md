@@ -20,5 +20,39 @@ EXPOSE 80
 
 # Inicia Nginx en modo no demonio (para mantener el contenedor activo)
 CMD ["nginx", "-g", "daemon off;"]
+```
+# Procedimiento
+Cuando ya tengamos todo lo anterior listo lo que vamos a hacer es lo siguiente, hacemos los siguientes comandos paso a paso.
+Con estos actualizamos el sistema, luego instalamos git y Docker
+```
+sudo apt update
+sudo apt install git -y
+sudo apt upgrade -y // Este paso no es necesario
+sudo apt install docker-compose -y
+```
+Revisamos la version que se instalo y el estado del Docker
+```
+sudo docker --version
+sudo systemctl status docker
+```
+Clonamos el repositorio
+```
+git clone https://github.com/Lian712/juego // Lian712 es mi usuario, en otro caso se pone algun otro y el juego es el nombre del repositorio
+cd juego
+```
+Creamos la Imagen Docker y revisamos si se creo correctamente
+```
+sudo docker build -t juego .
+sudo docker image ls
+```
+Inicializamos/Corremos el Docker en el puerto 80
+```
+sudo docker run -d -p 80:80 juego
+```
+Revisamos en el navegador si funciona
+```
+http://54.160.36.205 // la ip es la publica que tu tengas, en mi caso es esa
+```
+
 
 
