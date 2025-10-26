@@ -1,4 +1,5 @@
 # juego
+Este es un juego que creamos un amigo y yo en otra materia, la cual consiste en un juego tipo casino que nos ayuda a mirar las probabilidades para ganar o perder y de la importancia de aplicar la teoria de monty hall (cuando cambiamos de opcion luego que nos dan pistas, tendremos mejores posibilidades para ganar).
 En este apartado te voy a mostrar lo que hicimos y lo que se debio hacer para el funcionamiento correcto de la pagina web, aparte de esto tambien resaltare unos puntos que me estaban costando a la realizacion como por ejemplo nombre, mayusculas o escritura de los archivos o comandos.
 # Creación del repositorio
 Primer paso creamos un repositorio, lo nombramos como queramos y le damos en la opcion de agregar el README.md en ON
