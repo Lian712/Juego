@@ -53,6 +53,8 @@ Revisamos en el navegador si funciona
 ```
 http://54.160.36.205 // la ip es la publica que tu tengas, en mi caso es esa
 ```
+# Conclusión
+Asi fue como se hizo este proyecto, espero te sirva y puedas incluso subir tu propio Docker con la pagina web que desees
 
 
 
