@@ -5,6 +5,7 @@ Primer paso creamos un repositorio, lo nombramos como queramos y le damos en la 
 Segundo paso subimos al repositorio lo que queremos, un html o lo que sea y de este creamos un Dockerfile
 # Lo que debe llevar el Dockerfile
 En el Dockerfile agregamos lo que necesitamos y en este caso le agregamos lo siguiente:
+```Dockerfile
 # Imagen base ligera con Nginx (servidor web)
 FROM nginx:alpine
 
